@@ -1,0 +1,33 @@
+{
+  "name": "3d-word-rain",
+  "version": "1.0.0",
+  "description": "3d word rain",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stupppid/3d-word-rain.git"
+  },
+  "keywords": [
+    "wordrain",
+    "文字雨",
+    "3d",
+    "黑客帝国"
+  ],
+  "author": "qizhuang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stupppid/3d-word-rain/issues"
+  },
+  "homepage": "https://github.com/stupppid/3d-word-rain#readme",
+  "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3"
+  },
+  "dependencies": {
+    "three": "^0.99.0"
+  }
+}
