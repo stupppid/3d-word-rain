@@ -134,7 +134,7 @@ function () {
     }
   }, {
     key: "goNext",
-    value: function goNext() {
+    value: function goNext(callback) {
       if (this.indent > 0) {
         --this.indent;
         return;
@@ -149,13 +149,10 @@ function () {
           this.recordIndex.pop();
         } else {
           this.words[index].show = !this.words[index].show;
-          this.words[index].el.innerText = this.words[index].text;
 
-          if (index > 0) {
-            this.words[index - 1].el.classList.remove('white');
+          if (callback && index > 0) {
+            callback(this.words[index].el, this.words[index - 1].el, this.words[index].text, index);
           }
-
-          this.words[index].el.classList.add('white');
         }
       }
 
@@ -184,9 +181,7 @@ var wordWidth = 12;
 var rowLength = Math.ceil(window.innerWidth / wordWidth);
 var colLength = Math.ceil(window.innerHeight / wordHeight) + 2;
 var root = document.createElement('div');
-root.classList.add('word');
-root.classList.add('nowrap');
-root.classList.add('height100');
+root.classList.add('word', 'nowrap', 'height100');
 var all = [];
 
 for (var i = 0; i < rowLength; i++) {
@@ -211,7 +206,15 @@ document.body.appendChild(root);
 
 function animate() {
   for (var _i in all) {
-    all[_i].goNext();
+    all[_i].goNext(function (el, preEl, text, index) {
+      el.innerText = text;
+
+      if (index > 0) {
+        preEl.classList.remove('white');
+      }
+
+      el.classList.add('white');
+    });
   }
 }
 

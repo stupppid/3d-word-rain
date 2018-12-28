@@ -1,8 +1,8 @@
 {
   "name": "3d-word-rain",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "3d word rain",
-  "main": "index.js",
+  "main": "js/index.js",
   "scripts": {
     "test": "test"
   },
@@ -25,6 +25,7 @@
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "browserify": "^16.2.3",
     "eslint": "^5.11.1",

@@ -1,6 +1,6 @@
 const gulp = require('gulp')
 const babel = require('gulp-babel')
-const watch = require('gulp-watch')
+require('gulp-watch')
 const browserify = require('browserify')
 const source = require('vinyl-source-stream')
 
@@ -23,7 +23,7 @@ gulp.task('browserify', function () {
 })
 
 gulp.task('watch', function () {
-  return gulp.watch('js/*.js', gulp.series('babel'))
+  return gulp.watch('js/*.js', gulp.series('babel', 'browserify'))
 })
 
 gulp.task('default', gulp.series('babel', 'browserify', 'watch'))

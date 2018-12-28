@@ -1,7 +1,7 @@
 /**
  * 文字雨的单个文字
  */
-export default class Word {
+module.exports = class Word {
   constructor (parent) {
     this.text = ''
     if (parent) {

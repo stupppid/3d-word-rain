@@ -1,7 +1,7 @@
 /**
  * 控制文字雨的显示
  */
-export default class WordList {
+module.exports = class WordList {
   constructor (opts) {
     this.recordIndex = [0]
     this.words = []
@@ -30,7 +30,7 @@ export default class WordList {
     return Math.ceil(Math.random() * (max - min) + min)
   }
 
-  goNext () {
+  goNext (callback) {
     if (this.indent > 0) {
       --this.indent
       return
@@ -43,11 +43,9 @@ export default class WordList {
         this.recordIndex.pop()
       } else {
         this.words[index].show = !this.words[index].show
-        this.words[index].el.innerText = this.words[index].text
-        if (index > 0) {
-          this.words[index - 1].el.classList.remove('white')
+        if (callback) {
+          callback(this.words[index].el, this.words[index - 1] ? this.words[index - 1].el : undefined, this.words[index].text, index)
         }
-        this.words[index].el.classList.add('white')
       }
     }
     if (this.recordIndex[0] > this.interval) {

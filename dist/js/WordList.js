@@ -1,10 +1,5 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -14,7 +9,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 /**
  * 控制文字雨的显示
  */
-var WordList =
+module.exports =
 /*#__PURE__*/
 function () {
   function WordList(opts) {
@@ -54,7 +49,7 @@ function () {
     }
   }, {
     key: "goNext",
-    value: function goNext() {
+    value: function goNext(callback) {
       if (this.indent > 0) {
         --this.indent;
         return;
@@ -69,13 +64,10 @@ function () {
           this.recordIndex.pop();
         } else {
           this.words[index].show = !this.words[index].show;
-          this.words[index].el.innerText = this.words[index].text;
 
-          if (index > 0) {
-            this.words[index - 1].el.classList.remove('white');
+          if (callback) {
+            callback(this.words[index].el, this.words[index - 1] ? this.words[index - 1].el : undefined, this.words[index].text, index);
           }
-
-          this.words[index].el.classList.add('white');
         }
       }
 
@@ -88,5 +80,3 @@ function () {
 
   return WordList;
 }();
-
-exports.default = WordList;

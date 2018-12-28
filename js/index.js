@@ -1,38 +1,142 @@
-import * as THREE from 'three'
-import Word from './Word'
-import WordList from './WordList'
+let THREE = require('three')
+let Word = require('./word')
+let WordList = require('./wordList')
 
-let scene = new THREE.Scene()
-let camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 20000)
-let renderer = new THREE.WebGLRenderer()
-renderer.setSize(window.innerWidth, window.innerHeight)
-document.body.appendChild(renderer.domElement)
-
-let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-let geometry = new THREE.BoxGeometry(1, 1, 1)
-let mesh = new THREE.Mesh(geometry, material)
-// scene.add(mesh)
-
-let texts = []
-var loader = new THREE.FontLoader()
-let textGeometry = null
-let text = null
-loader.load('fonts/Arial_Bold.json', function (font) {
-  textGeometry = new THREE.TextGeometry('Hello three.js!', {
-    font: font,
-    size: 100,
-    height: 10,
-    curveSegments: 10
+let rain = function (fontPath) {
+  let scene = new THREE.Scene()
+  let camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000)
+  let renderer = new THREE.WebGLRenderer()
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  document.body.appendChild(renderer.domElement)
+  let greenMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+  let whiteMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff })
+  let loader = new THREE.FontLoader()
+  let textGeometry = null
+  let text = null
+  let font = null
+  let geometrys = []
+  let matrixLength = 25
+  let fontSize = 10
+  let matrixSpaceInterval = 70
+  let cameraInit = (matrixSpaceInterval + fontSize) * matrixLength / 2
+  camera.position.x = cameraInit
+  camera.position.y = -cameraInit
+  camera.position.z = cameraInit
+  // 每秒10帧
+  let keyframeInterval = 60 / 6
+  loader.load(fontPath || 'fonts/Arial_Bold.json', function (f) {
+    font = f
+    init()
   })
-  text = new THREE.Mesh(textGeometry, material)
-  scene.add(text)
-})
+  function getTextGeometry (text) {
+    if (!geometrys[text]) {
+      geometrys[text] = new THREE.TextGeometry(text, {
+        font: font,
+        size: fontSize,
+        height: 1,
+        curveSegments: 1
+      })
+    }
+    return geometrys[text]
+  }
+  let all = []
+  // 等待字体加载完毕执行
+  function init () {
+    textGeometry = getTextGeometry('')
+    text = new THREE.Mesh(textGeometry, greenMaterial)
+    let textColne = null
+    for (let i = 0; i < matrixLength; i++) {
+      let dim = []
+      for (let j = 0; j < matrixLength; j++) {
+        let words = new WordList()
+        for (let k = 0; k < matrixLength; k++) {
+          let word = new Word(words)
+          textColne = text.clone()
+          textColne.geometry = getTextGeometry('')
+          textColne.position.x += matrixSpaceInterval * i
+          textColne.position.z += matrixSpaceInterval * j
+          // 必须是最底层循环设置y
+          textColne.position.y -= matrixSpaceInterval * k
+          word.el = textColne
+          scene.add(textColne)
+          words.addWord(word)
+        }
+        dim.push(words)
+      }
+      all.push(dim)
+    }
+    console.log(all)
+  }
 
-camera.position.z = 10000
+  let mx = 0
+  let my = 0
+  let wheel = 0
+  // 添加事件
+  function addEvents () {
+    document.addEventListener('mousemove', function (event) {
+      if (event.buttons === 1) {
+        mx += event.movementX / window.innerWidth
+        my += event.movementY / window.innerHeight
+      }
+    })
 
-function animate () {
-  window.requestAnimationFrame(animate)
-  mesh.rotation.x += 0.1
-  renderer.render(scene, camera)
+    document.addEventListener('mousewheel', function (event) {
+      wheel += event.deltaY * 0.05
+    }, { passive: false })
+  }
+  // 渲染镜头
+  function renderCamera () {
+    let cameraMoveInterval = 0.08
+    let minRotationInterval = 0.001
+    let minScrollInterval = 0.1
+    function calValue (val, min, interval) {
+      return Math.abs(val) < min ? 0 : val * (1 - interval)
+    }
+    return function () {
+      camera.rotation.y += mx * cameraMoveInterval
+      camera.rotation.x += my * cameraMoveInterval
+      camera.position.z += wheel * cameraMoveInterval
+      mx = calValue(mx, minRotationInterval, cameraMoveInterval)
+      my = calValue(my, minRotationInterval, cameraMoveInterval)
+      wheel = calValue(wheel, minScrollInterval, cameraMoveInterval)
+    }
+  }
+  // 渲染mesh
+  function renderMesh () {
+    if (keyframeInterval >= 5) {
+      for (let i = 0; i < all.length; i++) {
+        for (let j = 0; j < all[i].length; j++) {
+          all[i][j].goNext(function (el, preEl, text) {
+            try {
+              el.geometry = getTextGeometry(text)
+              if (preEl) {
+                preEl.material = greenMaterial
+              }
+              el.material = whiteMaterial
+            } catch (e) {
+              console.log(e)
+            }
+          })
+        }
+      }
+      keyframeInterval = 0
+    }
+    keyframeInterval++
+  }
+  // 动画
+  function animate () {
+    window.requestAnimationFrame(animate)
+    renderCamera()()
+    renderMesh()
+    renderer.render(scene, camera)
+  }
+  animate()
+  addEvents()
 }
-animate()
+
+module.exports = {
+  rain: rain
+}
+
+// 如果不用npm包引入，而用script标签引入，请直接用dist/js/bundle.js
+// rain()
