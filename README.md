@@ -13,10 +13,10 @@ ps : 可能有点不协调，有比较熟练的UI看到的话，请一定要告�
 `npm i 3d-word-rain`
 
 # js:
-npm引入：
+npm引入：  //这里font.json可以参考包里的那个Arial_Bold.json
 ````
 const wordRain = require('3d-word-rain')
-wordRain.rain()
+wordRain.rain('path/to/font.json')
 ````
 
 script标签引入（路径要根据项目放的地方写）：
