@@ -23,7 +23,7 @@ gulp.task('browserify', function () {
 })
 
 gulp.task('watch', function () {
-  return gulp.watch('js/*.js', ['babel'])
+  return gulp.watch('js/*.js', gulp.series('babel'))
 })
 
 gulp.task('default', gulp.series('babel', 'browserify', 'watch'))

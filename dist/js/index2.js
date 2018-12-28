@@ -11,9 +11,7 @@ var wordWidth = 12;
 var rowLength = Math.ceil(window.innerWidth / wordWidth);
 var colLength = Math.ceil(window.innerHeight / wordHeight) + 2;
 var root = document.createElement('div');
-root.classList.add('word');
-root.classList.add('nowrap');
-root.classList.add('height100');
+root.classList.add('word', 'nowrap', 'height100');
 var all = [];
 
 for (var i = 0; i < rowLength; i++) {

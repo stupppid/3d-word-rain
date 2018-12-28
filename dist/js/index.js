@@ -38,8 +38,8 @@ loader.load('fonts/Arial_Bold.json', function (font) {
 camera.position.z = 10000;
 
 function animate() {
-  requestAnimationFrame(animate);
-  mesh.rotation.x += .1;
+  window.requestAnimationFrame(animate);
+  mesh.rotation.x += 0.1;
   renderer.render(scene, camera);
 }
 
