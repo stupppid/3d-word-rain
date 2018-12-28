@@ -1,7 +1,7 @@
 /**
  * 控制文字雨的显示
  */
-class WordList{
+export default class WordList{
     constructor(opts){
         this.recordIndex = [0]
         this.words = []
