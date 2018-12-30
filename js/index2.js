@@ -9,7 +9,6 @@ let rain = function () {
 
   let root = document.createElement('div')
   root.classList.add('word', 'nowrap', 'height100')
-
   let all = []
   for (let i = 0; i < rowLength; i++) {
     let t = document.createElement('ul')
@@ -46,5 +45,4 @@ module.exports = {
   rain: rain
 }
 
-// 如果不用npm包引入，而用script标签引入，请直接用dist/js/bundle.js
-// rain()
+window.rain = rain

@@ -51,7 +51,6 @@ var rain = function rain() {
 };
 
 module.exports = {
-  rain: rain // 如果不用npm包引入，而用script标签引入，加入这一行
-
+  rain: rain
 };
-rain();
+window.rain = rain;

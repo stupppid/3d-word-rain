@@ -1,31 +1,40 @@
 # 3d-word-rain
-文字雨3d版(网页)
+made by threejs
 
-先添加了2D版本，使用http-server运行该目录后，打开localhost:8080/index2
-
-3D的也写好了，使用http-server运行该目录后，打开localhost:8080/index2
-ps : 可能有点不协调，有比较熟练的UI看到的话，请一定要告诉我怎么调整样式~~
-
-## 若要运行源文件，可以通过http-server 运行，同时运行gulp(用来转换node -> 浏览器es5)
-## 如果不用npm包引入，而用script标签引入，请直接用dist/js/bundle.js，否则gulp运行之后会改变这个文件
+- Hold down the left mouse button and drag to rotate. The center of rotation is the center of the text rain
+- Mouse wheel control camera's movement
+- the main body of the text rain is 25 * 25 * 25 text geometries, so maybe you can see the edge of the rain
+- To run the source file, you can run it through `http-server` ,and run `gulp` meanwhile(to convert node - > browser es5)
+- the bundle.js is not be uglified, it's really a big file
+- Maybe it's a little incongruous. If you are good at UI design, please tell me how to adjust the style~~
 
 # cmd:
 `npm i 3d-word-rain`
 
 # js:
-npm引入：  //这里font.json可以参考包里的那个Arial_Bold.json
+## import by npm
 ````
 const wordRain = require('3d-word-rain')
 wordRain.rain('path/to/font.json')
 ````
+if you dont know what's the font.json file,
+you can see `/fonts/Arial_Bold.json` in the node_modules,
+and copy it to a static file to use by url(that you can request by a browser), 
+must be a json file, not ttf/woff file! it can be searched by google or 百度. 
 
-script标签引入（路径要根据项目放的地方写）：
+## import by script tag
 ````
 <script src="dist/js/bundle.js"></script>
+<script>
+    rain('path/to/font.json')
+</script>
 ````
 
-script标签引入2d文字雨版本（路径要根据项目放的地方写）：
+## import 2d version by script tag
 ````
 <script src="dist/js/bundle2.js"></script>
+<script>
+    rain()
+</script>
 ````
 

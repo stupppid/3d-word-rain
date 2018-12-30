@@ -5,6 +5,9 @@ let WordList = require('./wordList')
 let rain = function (fontPath) {
   let scene = new THREE.Scene()
   let camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000)
+  let cameraMaster = new THREE.Object3D()
+  cameraMaster.add(camera)
+  scene.add(cameraMaster)
   let renderer = new THREE.WebGLRenderer()
   renderer.setSize(window.innerWidth, window.innerHeight)
   document.body.appendChild(renderer.domElement)
@@ -18,11 +21,14 @@ let rain = function (fontPath) {
   let matrixLength = 25
   let fontSize = 10
   let matrixSpaceInterval = 70
+  // 设置摄像头位置
   let cameraInit = (matrixSpaceInterval + fontSize) * matrixLength / 2
-  camera.position.x = cameraInit
-  camera.position.y = -cameraInit
-  camera.position.z = cameraInit
-  // 每秒10帧
+  cameraMaster.position.x = cameraInit
+  cameraMaster.position.y = -cameraInit
+  cameraMaster.position.z = cameraInit
+  camera.position.x = 0
+  camera.position.y = 0
+  camera.position.z = 0
   let keyframeInterval = 60 / 6
   loader.load(fontPath || 'fonts/Arial_Bold.json', function (f) {
     font = f
@@ -75,14 +81,14 @@ let rain = function (fontPath) {
   function addEvents () {
     document.addEventListener('mousemove', function (event) {
       if (event.buttons === 1) {
-        mx += event.movementX / window.innerWidth
-        my += event.movementY / window.innerHeight
+        mx += event.movementX * 2 / window.innerWidth
+        my += event.movementY * 2 / window.innerHeight
       }
     })
 
     document.addEventListener('mousewheel', function (event) {
-      wheel += event.deltaY * 0.05
-    }, { passive: false })
+      wheel += event.deltaY
+    })
   }
   // 渲染镜头
   function renderCamera () {
@@ -93,8 +99,8 @@ let rain = function (fontPath) {
       return Math.abs(val) < min ? 0 : val * (1 - interval)
     }
     return function () {
-      camera.rotation.y += mx * cameraMoveInterval
-      camera.rotation.x += my * cameraMoveInterval
+      cameraMaster.rotation.y += mx * cameraMoveInterval
+      cameraMaster.rotation.x += my * cameraMoveInterval
       camera.position.z += wheel * cameraMoveInterval
       mx = calValue(mx, minRotationInterval, cameraMoveInterval)
       my = calValue(my, minRotationInterval, cameraMoveInterval)
@@ -138,5 +144,4 @@ module.exports = {
   rain: rain
 }
 
-// 如果不用npm包引入，而用script标签引入，请直接用dist/js/bundle.js
-// rain()
+window.rain = rain
