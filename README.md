@@ -40,7 +40,7 @@ must be a json file, not ttf/woff file! it can be searched by google or 百度.
 
 ## demo image
 ### 3d-word-rain
-![3d word rain](/blob/master/dist/img/3d-word-rain.gif)
+![3d word rain](https://github.com/stupppid/3d-word-rain/blob/master/dist/img/3d-word-rain.gif)
 
 ### 2d-word-rain
-![2d word rain](/tree/master/dist/img/2d.PNG)
+![2d word rain](https://github.com/stupppid/3d-word-rain/blob/master/dist/img/2d.PNG)
