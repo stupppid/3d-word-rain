@@ -1,6 +1,6 @@
 {
   "name": "3d-word-rain",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "3d word rain",
   "main": "js/index.js",
   "scripts": {

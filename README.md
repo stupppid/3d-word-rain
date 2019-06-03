@@ -44,3 +44,10 @@ must be a json file, not ttf/woff file! it can be searched by google or 百度.
 
 ### 2d-word-rain
 ![2d word rain](https://github.com/stupppid/3d-word-rain/blob/master/dist/img/2d.PNG)
+
+## changelog
+	1.08: 
+		now you can assign a element as a container, the default container is document.body.
+		use it like this way.
+		
+		rain('path/to/font.json', rootElement)

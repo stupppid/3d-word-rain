@@ -2,7 +2,7 @@ let THREE = require('three')
 let Word = require('./word')
 let WordList = require('./wordList')
 
-let rain = function (fontPath) {
+let rain = function (fontPath, root=document.body) {
   let scene = new THREE.Scene()
   let camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000)
   let cameraMaster = new THREE.Object3D()
@@ -10,7 +10,7 @@ let rain = function (fontPath) {
   scene.add(cameraMaster)
   let renderer = new THREE.WebGLRenderer()
   renderer.setSize(window.innerWidth, window.innerHeight)
-  document.body.appendChild(renderer.domElement)
+  root.appendChild(renderer.domElement)
   let greenMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
   let whiteMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff })
   let loader = new THREE.FontLoader()

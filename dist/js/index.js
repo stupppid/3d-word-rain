@@ -7,6 +7,7 @@ var Word = require('./word');
 var WordList = require('./wordList');
 
 var rain = function rain(fontPath) {
+  var root = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : document.body;
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
   var cameraMaster = new THREE.Object3D();
@@ -14,7 +15,7 @@ var rain = function rain(fontPath) {
   scene.add(cameraMaster);
   var renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
+  root.appendChild(renderer.domElement);
   var greenMaterial = new THREE.MeshBasicMaterial({
     color: 0x00ff00
   });
