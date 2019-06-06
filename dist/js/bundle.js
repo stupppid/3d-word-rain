@@ -9,12 +9,12 @@ var WordList = require('./wordList');
 
 var rain = function rain(fontPath) {
   var root = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : document.body;
-  var scene = new THREE.Scene();
+  var scene = rain.scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
-  var cameraMaster = new THREE.Object3D();
+  var cameraMaster = rain.cameraMaster = new THREE.Object3D();
   cameraMaster.add(camera);
   scene.add(cameraMaster);
-  var renderer = new THREE.WebGLRenderer();
+  var renderer = rain.renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
   root.appendChild(renderer.domElement);
   var greenMaterial = new THREE.MeshBasicMaterial({
@@ -89,8 +89,6 @@ var rain = function rain(fontPath) {
 
       all.push(dim);
     }
-
-    console.log(all);
   }
 
   var mx = 0;
@@ -98,15 +96,57 @@ var rain = function rain(fontPath) {
   var wheel = 0; // 添加事件
 
   function addEvents() {
-    document.addEventListener('mousemove', function (event) {
+    renderer.domElement.addEventListener('mousemove', function (event) {
+      event.preventDefault();
+
       if (event.buttons === 1) {
         mx += event.movementX * 2 / window.innerWidth;
         my += event.movementY * 2 / window.innerHeight;
       }
     });
-    document.addEventListener('mousewheel', function (event) {
+    renderer.domElement.addEventListener('mousewheel', function (event) {
+      event.preventDefault();
       wheel += event.deltaY;
     });
+    var cx, cy, length, toFingerFlag;
+    renderer.domElement.addEventListener('touchstart', function (e) {
+      e.preventDefault();
+
+      if (e.targetTouches.length === 1) {
+        var t = e.targetTouches[0];
+        cx = t.clientX;
+        cy = t.clientY;
+      }
+    }, false);
+    renderer.domElement.addEventListener('touchend', function (e) {
+      if (e.targetTouches.length === 1) {
+        length = 0;
+        toFingerFlag = false;
+      }
+    }, false);
+    root.addEventListener('touchmove', function (e) {
+      e.preventDefault();
+
+      if (e.targetTouches.length === 2) {
+        toFingerFlag = true;
+        var t1 = e.targetTouches[0];
+        var t2 = e.targetTouches[1];
+        var len = Math.sqrt(Math.pow(t2.clientX - t1.clientX, 2) + Math.pow(t2.clientY - t1.clientY, 2));
+
+        if (length) {
+          wheel += length - len;
+        }
+
+        length = len;
+      } else if (e.targetTouches.length === 1 && !toFingerFlag) {
+        var t = e.targetTouches[0];
+        mx += (t.clientX - cx) / window.innerWidth;
+        my += (t.clientY - cy) / window.innerHeight;
+        cx = t.clientX;
+        cy = t.clientY;
+        length = 0;
+      }
+    }, false);
   } // 渲染镜头
 
 
@@ -154,10 +194,26 @@ var rain = function rain(fontPath) {
     }
 
     keyframeInterval++;
-  } // 动画
+  } // add stop function
+
+
+  rain.stopFlag = false;
+
+  rain.stop = function () {
+    rain.stopFlag = true;
+  };
+
+  rain.start = function () {
+    rain.stopFlag = false;
+    animate();
+  }; // 动画
 
 
   function animate() {
+    if (rain.stopFlag) {
+      return;
+    }
+
     window.requestAnimationFrame(animate);
     renderCamera()();
     renderMesh();

@@ -51,3 +51,14 @@ must be a json file, not ttf/woff file! it can be searched by google or 百度.
 		use it like this way.
 		
 		rain('path/to/font.json', rootElement)
+		
+	1.09:
+	    add mobile end support and exposing some attributes as following:
+	    
+            - rain.scene        # for get the scene of 3d-word-rain
+            - rain.renderer     # for get rendererElement
+            - rain.cameraMaster # for controling the movement of camera
+            - rain.stopFlag     # for checking whether it is animating or not
+	    
+	    add start function and stop function.
+	    use rain.stop() to stop animating, use rain.start() to restart animating.

@@ -2,13 +2,13 @@ let THREE = require('three')
 let Word = require('./word')
 let WordList = require('./wordList')
 
-let rain = function (fontPath, root=document.body) {
-  let scene = new THREE.Scene()
+let rain = function (fontPath, root = document.body) {
+  let scene = rain.scene = new THREE.Scene()
   let camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000)
-  let cameraMaster = new THREE.Object3D()
+  let cameraMaster = rain.cameraMaster = new THREE.Object3D()
   cameraMaster.add(camera)
   scene.add(cameraMaster)
-  let renderer = new THREE.WebGLRenderer()
+  let renderer = rain.renderer = new THREE.WebGLRenderer()
   renderer.setSize(window.innerWidth, window.innerHeight)
   root.appendChild(renderer.domElement)
   let greenMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
@@ -71,7 +71,6 @@ let rain = function (fontPath, root=document.body) {
       }
       all.push(dim)
     }
-    console.log(all)
   }
 
   let mx = 0
@@ -79,16 +78,56 @@ let rain = function (fontPath, root=document.body) {
   let wheel = 0
   // 添加事件
   function addEvents () {
-    document.addEventListener('mousemove', function (event) {
+    renderer.domElement.addEventListener('mousemove', function (event) {
+      event.preventDefault()
       if (event.buttons === 1) {
         mx += event.movementX * 2 / window.innerWidth
         my += event.movementY * 2 / window.innerHeight
       }
     })
 
-    document.addEventListener('mousewheel', function (event) {
+    renderer.domElement.addEventListener('mousewheel', function (event) {
+      event.preventDefault()
       wheel += event.deltaY
     })
+
+    let cx, cy, length, toFingerFlag
+    renderer.domElement.addEventListener('touchstart', function (e) {
+      e.preventDefault()
+      if (e.targetTouches.length === 1) {
+        let t = e.targetTouches[0]
+        cx = t.clientX
+        cy = t.clientY
+      }
+    }, false)
+
+    renderer.domElement.addEventListener('touchend', function (e) {
+      if (e.targetTouches.length === 1) {
+        length = 0
+        toFingerFlag = false
+      }
+    }, false)
+
+    root.addEventListener('touchmove', function (e) {
+      e.preventDefault()
+      if (e.targetTouches.length === 2) {
+        toFingerFlag = true
+        let t1 = e.targetTouches[0]
+        let t2 = e.targetTouches[1]
+        let len = Math.sqrt(Math.pow(t2.clientX - t1.clientX, 2) + Math.pow(t2.clientY - t1.clientY, 2))
+        if (length) {
+          wheel += (length - len)
+        }
+        length = len
+      } else if (e.targetTouches.length === 1 && !toFingerFlag) {
+        let t = e.targetTouches[0]
+        mx += (t.clientX - cx) / window.innerWidth
+        my += (t.clientY - cy) / window.innerHeight
+        cx = t.clientX
+        cy = t.clientY
+        length = 0
+      }
+    }, false)
   }
   // 渲染镜头
   function renderCamera () {
@@ -129,8 +168,22 @@ let rain = function (fontPath, root=document.body) {
     }
     keyframeInterval++
   }
+  // add stop function
+  rain.stopFlag = false
+
+  rain.stop = function () {
+    rain.stopFlag = true
+  }
+
+  rain.start = function () {
+    rain.stopFlag = false
+    animate()
+  }
   // 动画
   function animate () {
+    if (rain.stopFlag) {
+      return
+    }
     window.requestAnimationFrame(animate)
     renderCamera()()
     renderMesh()
