@@ -41,6 +41,6 @@
     "vinyl-source-stream": "^2.0.0"
   },
   "dependencies": {
-    "three": "^0.99.0"
+    "three": "^0.137.0"
   }
 }
