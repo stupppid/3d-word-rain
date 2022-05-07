@@ -1,5 +1,5 @@
 # 3d-word-rain
-made by threejs
+made by threejs   [demo](https://stupppid.github.io/dist/zh/#3d-word-rain)
 
 - Hold down the left mouse button and drag to rotate. The center of rotation is the center of the text rain
 - Mouse wheel control camera's movement
